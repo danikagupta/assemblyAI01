@@ -1,1 +1,11 @@
 streamlit
+
+#
+# sudo apt update
+# sudo apt install ffmpeg
+#
+pydub
+assemblyai
+#
+#
+yt_dlp
