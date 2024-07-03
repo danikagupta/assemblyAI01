@@ -8,20 +8,6 @@ import json
 def current_time():
     return datetime.now().strftime("%H:%M:%S")
 
-def transcribe_yt_assemblyAI(url):
-    with yt_dlp.YoutubeDL() as ydl:
-        info = ydl.extract_info(url, download=False)
-
-    for format in info["formats"][::-1]:
-        if format["resolution"] == "audio only" and format["ext"] == "m4a":
-            new_url = format["url"]
-            break
-
-    transcriber = aai.Transcriber()
-    st.write(f"About to fetch audio from URL {new_url}")
-    transcript = transcriber.transcribe(new_url)
-    return transcript
-
 def transcribe_yt_assembly2(url):
     config = aai.TranscriptionConfig(
      speaker_labels=True,
@@ -39,8 +25,6 @@ if youtube_link:
     st.write(f"{current_time()} About to fetch audio from URL {youtube_link}")
     audio_file = download_video_audio(youtube_link)
     st.write(f"{current_time()} Transcribing audio from URL {youtube_link} file: {audio_file}")
-    #transcriber = aai.Transcriber()
-    #transcript = transcriber.transcribe(audio_file)
     transcript = transcribe_yt_assembly2(audio_file)
     st.write(f"{current_time()} Completed transcribing {youtube_link}")
     if transcript.status == aai.TranscriptStatus.error:
