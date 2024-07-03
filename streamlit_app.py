@@ -9,6 +9,7 @@ def current_time():
     return datetime.now().strftime("%H:%M:%S")
 
 def transcribe_yt_assembly2(url):
+    aai.settings.api_key =st.secrets['ASSEMBLY_AI_KEY']
     config = aai.TranscriptionConfig(
      speaker_labels=True,
     )
