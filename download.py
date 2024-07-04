@@ -7,7 +7,7 @@ import shutil
 
 MAX_FILE_SIZE = 125 * 1024 * 1024  # 25 MB
 FILE_TOO_LARGE_MESSAGE = "The audio file is too large for the current size and rate limits using Whisper. If you used a YouTube link, please try a shorter video clip. If you uploaded an audio file, try trimming or compressing the audio to under 25 MB."
-max_retries = 1
+max_retries = 3
 delay = 2
 
 
@@ -35,6 +35,7 @@ def my_hook(d):
 def get_ydl_opts(external_logger=lambda x: None):
     return {
     "format": "bestaudio/best",
+    "verbose": True,
     "postprocessors": [
         {
             "key": "FFmpegExtractAudio",

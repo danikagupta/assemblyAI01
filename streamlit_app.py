@@ -4,6 +4,7 @@ from download import download_video_audio
 import yt_dlp
 from datetime import datetime
 import json
+import pandas as pd
 
 def current_time():
     return datetime.now().strftime("%H:%M:%S")
@@ -17,9 +18,19 @@ def transcribe_yt_assembly2(url):
     return transcript
 
 def save_transcript_to_file(ts, file_path):
+    df=pd.DataFrame(columns=["start","duration","speaker","text"])
+    for t in ts:
+        duration=(t.end-t.start)/1000
+        df.loc[len(df)]=[t.start//1000,duration,t.speaker,t.text]
+    df.to_csv(file_path,index=False)
+    xxx="""
+    
     with open(file_path, 'w') as f:
         for t in ts:
-            f.write(f"{t.speaker}: {t.text}\n")
+            duration=(t.end-t.start)/1000
+            df.loc[len(df)]=[t.start//1000,duration,t.speaker,t.text]
+            f.write(f"{t.start//1000},{duration},{t.speaker},{t.text}\n")
+    """
 
 youtube_link = st.text_input("Enter YouTube link:", "")
 if youtube_link:
@@ -31,6 +42,8 @@ if youtube_link:
     if transcript.status == aai.TranscriptStatus.error:
         st.write(transcript.error)
     else:
-        save_transcript_to_file(transcript.utterances, audio_file+".json")
+        save_transcript_to_file(transcript.utterances, audio_file+".csv")
+        #st.write("# First five lines:")
         for utterance in transcript.utterances:
-            st.write(f"Speaker {utterance.speaker}: {utterance.text}")
+            duration=(utterance.end-utterance.start)/1000
+            st.write(f"{utterance.start//1000} - {duration} : Speaker {utterance.speaker}: {utterance.text}")
